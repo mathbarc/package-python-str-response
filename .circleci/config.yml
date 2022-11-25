@@ -81,17 +81,17 @@ jobs:
           path: dist/str_response-1.0.0.tar.gz
 
 
-#orbs:
-#  sonarcloud: sonarsource/sonarcloud@1.0.3
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.0.3
 
 workflows:
   main:
     jobs:
       - test:
-#          context: shared-sonarcloud-token
+          context: shared-sonarcloud-token
       - build:
-#          requires:
-#            - test
+          requires:
+            - test
           context: shared-sonarcloud-token
           filters:
             branches:
