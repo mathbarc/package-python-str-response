@@ -87,17 +87,17 @@ jobs:
 workflows:
   main:
     jobs:
-      - test:
-          context: shared-sonarcloud-token
-      - build:
-          requires:
-            - test
-          context: shared-sonarcloud-token
-          filters:
-            branches:
-              only: 
-                - main
-                - dev
+#      - test:
+#          context: shared-sonarcloud-token
+#      - build:
+#          requires:
+#            - test
+#          context: shared-sonarcloud-token
+#          filters:
+#            branches:
+#              only:
+#                - main
+#                - dev
       - publish-github-release:
           requires: 
             - build
