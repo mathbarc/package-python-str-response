@@ -1,0 +1,115 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          command: "sudo pip3 install -r requirements.txt"
+      - run:
+          command: "sudo pip3 install pytest pytest-cov"
+      - run:
+          name: "run tests"
+          command: "python test_str_response.py"
+      - sonarcloud/scan
+
+  build:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          command: "sudo pip3 install wheel setuptools"
+      - run:
+          command: "sudo pip3 install -r requirements.txt"
+      - run:
+          name: "build wheels"
+          command: "python3 setup.py bdist_wheel"
+      - run:
+          name: "move to artifacts folder"
+          command: "mkdir artifacts; mv ./dist/str_response-1.0.0-py3-none-any.whl artifacts"
+      - run:
+          command: "sudo pip3 install -r requirements_docs.txt"
+      - run:
+          name: "build docs"
+          command: "cd docs; make html; cd .."
+      - run:
+          name: "packaging docs"
+          command: "cd docs/html/; zip -r ../../artifacts/str_response_docs.zip .; cd ../.. "
+      - store_artifacts:
+          path: ./artifacts
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - str_response_docs.zip
+            - str_response-1.0.0-py3-none-any.whl
+      
+  
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: ./artifacts
+      - run:
+          name: "list files"
+          command: "find -name 'str_response*'"
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            VERSION="1.0.2"
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+
+  publish-gemfury-release:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          command: "sudo pip3 install wheel setuptools"
+      - run:
+          command: "sudo pip3 install -r requirements.txt"
+      - run:
+          name: "build wheels"
+          command: "python3 setup.py sdist"
+      - run:
+          name: "Publish Release on GemFury"
+          command: "curl -F package=@dist/str_response-1.0.0.tar.gz https://${FURY_PUSH_TOKEN}@push.fury.io/syngenta-digital/"
+      - store_artifacts:
+          path: dist/str_response-1.0.0.tar.gz
+
+
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.0.3
+
+workflows:
+  main:
+    jobs:
+      - test:
+          context: shared-sonarcloud-token
+      - build:
+          requires:
+            - test
+          context: shared-sonarcloud-token
+          filters:
+            branches:
+              only: 
+                - main
+                - dev
+      - publish-github-release:
+          requires: 
+            - build
+          filters:
+            branches:
+              only: main
+          context: shared-github-token
+      - publish-gemfury-release:
+          requires: 
+            - build
+          filters:
+            branches:
+              only: main
+          context: shared-gemfury-tokens
+      
