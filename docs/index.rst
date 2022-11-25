@@ -1,0 +1,14 @@
+.. Cloud Coverage documentation master file, created by
+   sphinx-quickstart on Sat Aug 20 01:30:49 2022.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Cloud Coverage's documentation!
+==========================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+.. include:: modules.rst
