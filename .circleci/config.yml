@@ -12,8 +12,10 @@ jobs:
           command: "sudo pip3 install pytest pytest-cov"
       - run:
           name: "run tests"
-          command: "python test_str_response.py"
+          command: "pytest --cov str_response tests --cov-report=xml"
       - sonarcloud/scan
+      - store_artifacts:
+          path: coverage.xml
 
   build:
     docker:
@@ -45,8 +47,7 @@ jobs:
           paths:
             - str_response_docs.zip
             - str_response-1.0.0-py3-none-any.whl
-      
-  
+
   publish-github-release:
     docker:
       - image: cibuilds/github:0.10
@@ -59,7 +60,7 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-            VERSION="1.0.2"
+            VERSION="1.0.0"
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 
   publish-gemfury-release:
@@ -96,20 +97,19 @@ workflows:
           filters:
             branches:
               only:
-                - main
-                - dev
+                - master
       - publish-github-release:
           requires: 
             - build
           filters:
             branches:
-              only: main
+              only: master
           context: shared-github-token
       - publish-gemfury-release:
           requires: 
             - build
           filters:
             branches:
-              only: main
+              only: master
           context: shared-gemfury-tokens
       

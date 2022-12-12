@@ -1,9 +1,5 @@
 import argparse
-from importlib.machinery import SourceFileLoader
-
-str_response = SourceFileLoader(
-    "str_response", "./str_response/__init__.py"
-).load_module()
+import str_response
 
 
 def main():
@@ -14,7 +10,7 @@ def main():
     number = int(args.n)
 
     str_returned = str_response.get_str(n=number)
-    print(str_returned)
+    # print(str_returned)
 
 
 if __name__ == "__main__":
