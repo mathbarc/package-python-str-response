@@ -13,14 +13,14 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath('..'))
-import cloud_segmentation
+import str_response
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Cloud Coverage'
-copyright = '2022, Gabriel Mendes Sousa'
-author = 'Gabriel Mendes Sousa'
+project = 'Str Response'
+copyright = '2022, Marcelo Borghetti Soares'
+author = 'Marcelo Borghetti Soares'
 release = '0.1'
 
 # -- General configuration ---------------------------------------------------

@@ -1,7 +1,7 @@
-cloud_segmentation
+str_response
 ==================
 
 .. toctree::
    :maxdepth: 4
 
-   cloud_segmentation
+   str_response

@@ -8,10 +8,9 @@ str_response = SourceFileLoader(
 
 
 class TestStrResponse(unittest.TestCase):
-    def run_test(self, image, results):
+    def test_str_response(self):
         value = str_response.get_str(1)
-
-        self.assertTrue(value, "Sucess!")
+        self.assertEqual(value, "Success!")
 
 
 if __name__ == '__main__':

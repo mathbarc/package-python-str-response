@@ -1,4 +1,4 @@
-from cloud_segmentation import __version__
+from str_response import __version__
 from setuptools import setup, find_packages
 from os import path
 
@@ -11,7 +11,7 @@ setup(
     classifiers=[
     ],
     keywords='str, response',
-    url='https://github.com/syngenta-digital/package-python-cloud-segmentation',
+    url='git@github.com:marcelo-borghetti/package-python-str-response.git',
     packages=find_packages(exclude=['tests*', 'docs*']),
     include_package_data=True,
     license="MIT",
